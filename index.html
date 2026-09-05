@@ -315,7 +315,7 @@
             <div class="field"><label for="diameter">Średnica pnia (mm)</label><input id="diameter" type="number"
                     min="50" step="1" value="400"></div>
             <div class="field"><label for="kerf">Rzaz piły (mm)</label><input id="kerf" type="number" min="0" step="0.1"
-                    value="3.2"></div>
+                    value="2.2"></div>
             <div class="field"><label for="overhang">Maks. wystawanie poza okrąg (%)</label><input id="overhang"
                     type="number" min="0" max="10" step="0.1" value="1.3"></div>
             <div class="field"><label for="quality">Dokładność wyszukiwania</label><select id="quality">
@@ -342,7 +342,7 @@
                     <div class="stat"><b id="over">0 mm</b><span>maks. wystawanie</span></div>
                     <div class="stat"><b id="cuts">0</b><span>rzeczywistych linii cięcia</span></div>
                 </div>
-                <div class="bottom" style="margin-top:14px">
+<!--                 <div class="bottom" style="margin-top:14px">
                     <div class="box">
                         <h2>Rozmieszczenie</h2>
                         <div id="summary" class="empty">Wprowadź wymiary i uruchom optymalizację.</div>
@@ -352,7 +352,7 @@
                         <div id="sequence" class="empty">Największe elementy są planowane w centrum.</div>
                     </div>
                 </div>
-            </div>
+ -->            </div>
         </section>
     </main>
     <script>
@@ -543,8 +543,8 @@
         }
         function updateUI(res) {
             const area = Math.PI * res.R * res.R, pa = res.placed.reduce((s, p) => s + p.area, 0); $('placed').textContent = `${res.placed.length} / ${res.requested}`; $('util').textContent = (pa / area * 100).toFixed(1) + '%'; $('waste').textContent = Math.max(0, 100 - pa / area * 100).toFixed(1) + '%'; const maxOv = res.placed.reduce((m, p) => Math.max(m, Math.max(0, Math.hypot(p.x + p.w / 2, p.y + p.h / 2) - res.R)), 0); $('over').textContent = maxOv.toFixed(1) + ' mm'; $('cuts').textContent = res.cuts;
-            const counts = {}; res.placed.forEach(p => counts[p.name] = (counts[p.name] || 0) + 1); $('summary').innerHTML = `<table><tr><th>Wymiar</th><th>Ułożono</th><th>Orientacja</th></tr>${Object.entries(counts).map(([n, q]) => `<tr><td>${n}</td><td>${q}</td><td>0° / 90° automatycznie</td></tr>`).join('')}</table><p class="hint">Brązowe odcinki na schemacie oznaczają krawędzie, które algorytm stara się prowadzić jako wspólną linię cięcia.</p>`;
-            const seq = [...res.placed].sort((a, b) => Math.hypot(a.x, a.y) - Math.hypot(b.x, b.y)); $('sequence').innerHTML = `<table><tr><th>#</th><th>Deska</th><th>Od środka</th><th>Obrót</th></tr>${seq.map((p, i) => `<tr><td>${i + 1}</td><td>${p.name}</td><td>${Math.hypot(p.x, p.y).toFixed(0)} mm</td><td>${p.rot}°</td></tr>`).join('')}</table><p class="hint"><b>${res.cuts}</b> rzeczywistych linii cięcia • ${res.shared} połączonych krawędzi • łączna długość przejść piły: ${res.cutLength.toFixed(0)} mm.</p>`; draw(res)
+            /* const counts = {}; res.placed.forEach(p => counts[p.name] = (counts[p.name] || 0) + 1); $('summary').innerHTML = `<table><tr><th>Wymiar</th><th>Ułożono</th><th>Orientacja</th></tr>${Object.entries(counts).map(([n, q]) => `<tr><td>${n}</td><td>${q}</td><td>0° / 90° automatycznie</td></tr>`).join('')}`; </table><p class="hint">Brązowe odcinki na schemacie oznaczają krawędzie, które algorytm stara się prowadzić jako wspólną linię cięcia.</p>`; */
+            /*const seq = [...res.placed].sort((a, b) => Math.hypot(a.x, a.y) - Math.hypot(b.x, b.y));  $('sequence').innerHTML = `<table><tr><th>#</th><th>Deska</th><th>Od środka</th><th>Obrót</th></tr>${seq.map((p, i) => `<tr><td>${i + 1}</td><td>${p.name}</td><td>${Math.hypot(p.x, p.y).toFixed(0)} mm</td><td>${p.rot}°</td></tr>`).join('')}</table><p class="hint"><b>${res.cuts}</b> rzeczywistych linii cięcia • ${res.shared} połączonych krawędzi • łączna długość przejść piły: ${res.cutLength.toFixed(0)} mm.</p>`; draw(res) */
         }
         $('optimize').onclick = () => {const items = inputs(); if (!items.length) return alert('Dodaj przynajmniej jeden poprawny wymiar deski.'); $('optimize').disabled = true; setTimeout(() => {result = runSearch(items, $('quality').value); updateUI(result); $('optimize').disabled = false}, 20)};
         $('reset').onclick = () => location.reload();
